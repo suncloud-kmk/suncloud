@@ -13,6 +13,7 @@
 <link rel="icon" type="image/png" href="icons/favicon.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap" crossorigin="anonymous">
+<script>document.documentElement.dataset.tod=(function(h){return h>=7&&h<17?"day":h>=17&&h<20?"eve":"night"})(new Date().getHours())</script>
 <style>
 :root{--bg:#cbbfa9;--glow:#ffe08a;--ink:#f3e9d2;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17120e}}
@@ -214,11 +215,53 @@ body{background:transparent}
 .gd .c u { text-decoration:none;font-size:10px;opacity:.7 }
 .gd .c.e { background:none;border:1px dashed rgba(255,255,255,.14);color:rgba(255,255,255,.28) }
 .gd .c.now { box-shadow:inset 0 0 0 1px rgba(232,163,58,.7) }
+
+/* ===== 분위기 업그레이드: 부드러운 조명, 질감, 살아있는 움직임 ===== */
+:root{--sky1:#a9dbf7;--sky2:#eef7fd;--tint:rgba(255,226,180,.16);--shaft:.9;--lampg:1}
+:root[data-tod="eve"]{--sky1:#f2985c;--sky2:#fcdcae;--tint:rgba(255,150,70,.24);--shaft:.95;--lampg:1.1}
+:root[data-tod="night"]{--sky1:#22386a;--sky2:#4a6aa6;--tint:rgba(70,90,160,.26);--shaft:.22;--lampg:1.35}
+.room .win{background:linear-gradient(var(--sky1),var(--sky2))}
+.room .tint{position:absolute;inset:0;background:var(--tint);mix-blend-mode:multiply}
+.room .shaft{position:absolute;right:-6%;top:3%;width:96%;height:97%;background:linear-gradient(115deg,rgba(255,244,208,.62),rgba(255,244,208,.2) 45%,transparent 75%);clip-path:polygon(80% 5%,99% 5%,66% 100%,10% 100%);filter:blur(7px);mix-blend-mode:screen;opacity:var(--shaft);will-change:opacity,transform;animation:shaft 11s ease-in-out infinite alternate}
+.room .fp{position:absolute;left:12%;bottom:1%;width:58%;height:25%;background:radial-gradient(ellipse,rgba(255,238,185,.6),transparent 70%);transform:skewX(-32deg);filter:blur(5px);mix-blend-mode:screen;opacity:var(--shaft);will-change:opacity;animation:shaft 11s ease-in-out infinite alternate}
+.room .vig{position:absolute;inset:0;background:radial-gradient(ellipse 110% 85% at 50% 42%,transparent 52%,rgba(70,36,12,.34) 100%),linear-gradient(transparent 64%,rgba(60,30,10,.22))}
+.room .dust i{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);border-radius:50%;background:rgba(255,249,225,.9);box-shadow:0 0 6px rgba(255,240,200,.9);opacity:0;will-change:transform,opacity;animation:mote var(--d) linear var(--dl) infinite}
+.room .cur{transform-origin:50% 0;will-change:transform;animation:sway 8s ease-in-out infinite alternate}
+.room .plant{transform-origin:50% 100%;will-change:transform;animation:leaf 6.5s ease-in-out infinite alternate}
+.room .lamp::before{opacity:calc(.85*var(--lampg));will-change:opacity;animation:glow 5.5s ease-in-out infinite alternate}
+.wash{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse 75% 55% at 88% 8%,rgba(255,241,205,.5),transparent 70%),linear-gradient(160deg,rgba(255,236,190,.14),transparent 45%);mix-blend-mode:soft-light}
+:root[data-tod="night"] .wash{background:radial-gradient(ellipse 70% 50% at 88% 8%,rgba(170,195,255,.35),transparent 70%)}
+@keyframes shaft{from{opacity:calc(var(--shaft)*.62);transform:translateX(0)}to{opacity:var(--shaft);transform:translateX(-10px)}}
+@keyframes mote{0%{opacity:0;transform:translate(0,0)}15%{opacity:.95}80%{opacity:.7}100%{opacity:0;transform:translate(-46px,70px)}}
+@keyframes sway{from{transform:skewX(-.9deg)}to{transform:skewX(1.1deg)}}
+@keyframes leaf{from{transform:rotate(-1.6deg)}to{transform:rotate(1.8deg)}}
+@keyframes glow{from{opacity:calc(.78*var(--lampg))}to{opacity:calc(1*var(--lampg))}}
+@keyframes crt{0%,100%{opacity:1}46%{opacity:.93}50%{opacity:.86}54%{opacity:.95}}
+@keyframes bloom{from{filter:brightness(.95)}to{filter:brightness(1.12)}}
+/* TV: 칠흑 같던 테두리와 패널을 따뜻한 월넛 나무와 황동 느낌으로, 화면은 더 밝은 브라운관 빛으로 */
+.bezel{background:linear-gradient(150deg,#7a6450,#3a2d22 55%,#5a4636);box-shadow:inset 0 0 0 2px #8a7358,inset 0 5px 12px rgba(0,0,0,.55),0 2px 0 rgba(255,225,180,.45),0 -1px 0 rgba(0,0,0,.5)}
+.bezel::before{border-color:rgba(255,235,200,.14)}
+.screen{background:radial-gradient(ellipse at 50% 42%,#4aa874 0,#256a47 42%,#0d2b1d 90%);box-shadow:inset 0 0 44px 10px rgba(0,0,0,.5),inset 0 0 14px 4px rgba(150,255,190,.3),0 0 0 3px #1c130b,0 0 22px 2px rgba(110,230,160,.22);animation:bloom 4.5s ease-in-out infinite alternate}
+.screen::before{background:radial-gradient(ellipse 60% 26% at 30% 9%,rgba(255,255,255,.3),transparent 72%),linear-gradient(118deg,rgba(255,255,255,.16),rgba(255,255,255,.03) 32%,transparent 46%),radial-gradient(ellipse at 50% 50%,transparent 58%,rgba(0,0,0,.36) 100%)}
+.screen::after{animation:crt 7s infinite}
+.panel{background:radial-gradient(circle at 9px 9px,#f1e2b8 0 2px,#8a7142 3px,transparent 4px),radial-gradient(circle at calc(100% - 9px) 9px,#f1e2b8 0 2px,#8a7142 3px,transparent 4px),radial-gradient(circle at 9px calc(100% - 9px),#f1e2b8 0 2px,#8a7142 3px,transparent 4px),radial-gradient(circle at calc(100% - 9px) calc(100% - 9px),#f1e2b8 0 2px,#8a7142 3px,transparent 4px),repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 3px),linear-gradient(180deg,#8a6d50,#5a4330 55%,#6c523b);box-shadow:inset 0 2px 3px rgba(255,235,200,.3),inset 0 -4px 8px rgba(0,0,0,.4),0 0 0 2px #35241a}
+.panel .dialBox span{color:#f6e8c4;text-shadow:0 1px 0 rgba(0,0,0,.55)}
+@media (prefers-reduced-motion:reduce){.room .shaft,.room .fp,.room .dust i,.room .cur,.room .plant,.room .lamp::before,.screen,.screen::after{animation:none!important}.room .dust{display:none}}
+/* 가로 모드(휴대폰을 눕혔을 때): 세로 모드와 똑같은 크기(TV 폭 340px)로 배치한 뒤, 화면 높이에 맞게 JS(fit)가 배율(zoom)을 조절함 */
+@media (orientation:landscape) and (max-height:620px){
+ body{padding:38px 10px 6px}
+ .wrap{max-width:340px}
+ .e{font-size:40px}
+ .n{font-size:21.6px}
+ .s{font-size:12.2px}
+ .go{font-size:11.2px}
+ .msg.has .n{font-size:18px}
+}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="wood" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.005 0.5" numOctaves="5" seed="7"/><feColorMatrix values="0 0 0 0 .35  0 0 0 0 .2  0 0 0 0 .08  0 0 0 1.9 -.55"/></filter></svg>
-<div class="room" aria-hidden="true"><div class="wall"></div><div class="frame"></div><div class="base"></div><div class="wain"></div><div class="floor"></div><div class="rug"></div><div class="win"></div><div class="cur"></div><div class="shelf"></div><div class="plant"></div><div class="lamp"></div></div>
+<div class="room" aria-hidden="true"><div class="wall"></div><div class="frame"></div><div class="base"></div><div class="wain"></div><div class="floor"></div><div class="rug"></div><div class="win"></div><div class="cur"></div><div class="shelf"></div><div class="plant"></div><div class="lamp"></div><div class="tint"></div><div class="shaft"></div><div class="fp"></div><div class="dust"><i style="--x:75%;--y:45%;--s:3.5px;--d:18s;--dl:-14s"></i><i style="--x:83%;--y:64%;--s:3.0px;--d:13s;--dl:-15s"></i><i style="--x:41%;--y:16%;--s:2.7px;--d:13s;--dl:-2s"></i><i style="--x:86%;--y:61%;--s:3.6px;--d:11s;--dl:-12s"></i><i style="--x:75%;--y:51%;--s:3.3px;--d:13s;--dl:-0s"></i><i style="--x:85%;--y:14%;--s:1.9px;--d:14s;--dl:-7s"></i><i style="--x:21%;--y:59%;--s:2.7px;--d:18s;--dl:-6s"></i><i style="--x:84%;--y:24%;--s:3.1px;--d:18s;--dl:-0s"></i><i style="--x:28%;--y:39%;--s:3.1px;--d:17s;--dl:-2s"></i><i style="--x:50%;--y:30%;--s:3.3px;--d:19s;--dl:-9s"></i><i style="--x:21%;--y:14%;--s:2.9px;--d:12s;--dl:-12s"></i><i style="--x:31%;--y:64%;--s:2.4px;--d:12s;--dl:-0s"></i><i style="--x:18%;--y:23%;--s:2.2px;--d:11s;--dl:-15s"></i><i style="--x:66%;--y:55%;--s:2.6px;--d:12s;--dl:-6s"></i><i style="--x:52%;--y:31%;--s:2.0px;--d:16s;--dl:-0s"></i><i style="--x:70%;--y:58%;--s:3.6px;--d:13s;--dl:-7s"></i></div><div class="vig"></div></div>
 <div class="wrap">
  <div class="ant"></div>
  <main class="tv">
@@ -250,6 +293,7 @@ body{background:transparent}
  </main>
  <div class="stand"><i class="d1"></i><i class="d2"></i><span class="leg l"></span><span class="leg r"></span></div>
 </div>
+<div class="wash" aria-hidden="true"></div>
 <div class="ov" id="ov" hidden><div class="box" id="box" role="dialog" aria-modal="true"></div></div>
 <script>
 const R={
@@ -437,6 +481,14 @@ box.onclick=e=>{const b=e.target.closest("button");if(!b)return;
  else if(b.id==="svimg")saveImg();
 };
 box.onkeydown=e=>{if(e.key==="Enter"&&e.target.id==="nm")addMenu()};
+
+/* 가로 모드 배율 맞추기: 높이에 맞게 줄이거나(최소 0.6배) 여유가 있으면 키움(최대 1.7배) */
+function fit(){const w=document.querySelector(".wrap");if(!w)return;w.style.zoom="";
+ if(!(innerWidth>innerHeight&&innerHeight<=620))return;
+ const r=getComputedStyle(document.documentElement),b=getComputedStyle(document.body),f=v=>parseFloat(v)||0;
+ const avail=innerHeight-f(r.paddingTop)-f(r.paddingBottom)-f(b.paddingTop)-f(b.paddingBottom),need=w.offsetHeight;
+ const z=Math.min(1.7,Math.max(.6,avail/need));if(z<1||z>1.01)w.style.zoom=z}
+addEventListener("resize",fit);addEventListener("orientationchange",fit);fit();
 </script>
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script>
 </body>

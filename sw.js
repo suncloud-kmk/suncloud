@@ -1,6 +1,6 @@
 /* 한끼채널 서비스 워커: 앱 파일을 기기에 저장해서 오프라인에서도 열리게 함.
    앱을 새로 올릴 때마다 아래 VER 숫자를 올려야 사용자 기기가 새 파일로 교체함. */
-const VER = 'hankki-v2';
+const VER = 'hankki-v4';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'privacy.html',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png',
   'icons/apple-touch-icon.png', 'icons/favicon.png'];
